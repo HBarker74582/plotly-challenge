@@ -14,19 +14,34 @@ function buildMetadata(sample) {
     sampleMetadata.html("");
     Object.entries(data).forEach(([key, value]) => {
       sampleMetadata.append("p").text(`${key}: ${value}`);
+      console.log(data);
     });
+    var gaugeChart = [
+      {
+        domain: { x: [2, 9], y: [0, 9] },
+        value: data.WFREQ,
+        title: { text: "Scrubs per Week" },
+        type: "indicator",
+        mode: "gauge+number"
+      }
+    ];
+
+    // var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
+    Plotly.newPlot("gauge", gaugeChart);
   });
 
-
-
   // BONUS: Build the Gauge Chart
-  buildGauge(data.WFREQ);
+  // buildGauge(data.WFREQ);
+
+
+
 }
 
 function buildCharts(sample) {
 
   d3.json(`/samples/${sample}`).then(function (data) {
     console.log(data.otu_labels);
+
     var sampleValues = data.sample_values;
     var otuID = data.otu_ids;
     var otuLabels = data.otu_labels;
@@ -42,7 +57,7 @@ function buildCharts(sample) {
     }];
 
     var traceBubble = bubbleTrace;
-    Plotly.plot("bubble", traceBubble);
+    Plotly.newPlot("bubble", traceBubble);
 
     // @TODO: Use `d3.json` to fetch the sample data for the plots
 
@@ -58,12 +73,12 @@ function buildCharts(sample) {
     }];
 
     var layout = {
-      height: 600,
-      width: 800
+      height: 500,
+      width: 400
     };
 
     var tracePie = pieChart;
-    Plotly.plot("pie", tracePie, layout);
+    Plotly.newPlot("pie", tracePie, layout);
 
   });
 }
