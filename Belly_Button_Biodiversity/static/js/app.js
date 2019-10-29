@@ -14,20 +14,21 @@ function buildMetadata(sample) {
     sampleMetadata.html("");
     Object.entries(data).forEach(([key, value]) => {
       sampleMetadata.append("p").text(`${key}: ${value}`);
-      console.log(data);
+      // console.log(data);
     });
     var gaugeChart = [
       {
-        domain: { x: [2, 9], y: [0, 9] },
+        domain: { x: [0, 1], y: [0, 1] },
         value: data.WFREQ,
         title: { text: "Scrubs per Week" },
         type: "indicator",
-        mode: "gauge+number"
+        mode: "gauge+number",
+        gauge: { axis: { range: [null, 9] } }
       }
     ];
 
-    // var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
-    Plotly.newPlot("gauge", gaugeChart);
+    var layout = { width: 400, height: 500, margin: { t: 0, b: 0 } };
+    Plotly.newPlot("gauge", gaugeChart, layout);
   });
 
   // BONUS: Build the Gauge Chart
@@ -40,7 +41,7 @@ function buildMetadata(sample) {
 function buildCharts(sample) {
 
   d3.json(`/samples/${sample}`).then(function (data) {
-    console.log(data.otu_labels);
+    // console.log(data.otu_labels);
 
     var sampleValues = data.sample_values;
     var otuID = data.otu_ids;
@@ -52,7 +53,8 @@ function buildCharts(sample) {
       mode: "markers",
       text: otuLabels,
       marker: {
-        size: sampleValues
+        size: sampleValues,
+        color: otuID
       }
     }];
 
