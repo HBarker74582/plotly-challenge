@@ -1,12 +1,9 @@
 function buildMetadata(sample) {
   // Use `d3.json` to fetch the metadata for a sample
   // Use d3 to select the panel with id of `#sample-metadata`
-
   // Use `.html("") to clear any existing metadata
-
   // Use `Object.entries` to add each key and value pair to the panel
-  // Hint: Inside the loop, you will need to use d3 to append new
-  // tags for each key-value in the metadata.
+
   var metadata_url = `/metadata/${sample}`;
 
   d3.json(metadata_url).then(function (data) {
@@ -16,6 +13,9 @@ function buildMetadata(sample) {
       sampleMetadata.append("p").text(`${key}: ${value}`);
       // console.log(data);
     });
+
+    // BONUS: Build the Gauge Chart
+    // buildGauge(data.WFREQ);
     var gaugeChart = [
       {
         domain: { x: [0, 1], y: [0, 1] },
@@ -30,14 +30,8 @@ function buildMetadata(sample) {
     var layout = { width: 400, height: 500, margin: { t: 0, b: 0 } };
     Plotly.newPlot("gauge", gaugeChart, layout);
   });
-
-  // BONUS: Build the Gauge Chart
-  // buildGauge(data.WFREQ);
-
-
-
 }
-
+// @TODO: Use `d3.json` to fetch the sample data for the plots
 function buildCharts(sample) {
 
   d3.json(`/samples/${sample}`).then(function (data) {
@@ -47,6 +41,7 @@ function buildCharts(sample) {
     var otuID = data.otu_ids;
     var otuLabels = data.otu_labels;
 
+    // @TODO: Build a Bubble Chart using the sample data
     var bubbleTrace = [{
       x: otuID,
       y: sampleValues,
@@ -61,13 +56,9 @@ function buildCharts(sample) {
     var traceBubble = bubbleTrace;
     Plotly.newPlot("bubble", traceBubble);
 
-    // @TODO: Use `d3.json` to fetch the sample data for the plots
-
-    // @TODO: Build a Bubble Chart using the sample data
-
     // @TODO: Build a Pie Chart
-    // HINT: You will need to use slice() to grab the top 10 sample_values,
-    // otu_ids, and labels (10 each).
+    // HINT: You will need to use slice() to grab the top 10 sample_values,  otu_ids, and labels (10 each).
+
     var pieChart = [{
       values: sampleValues.slice(0, 10),
       labels: otuID.slice(0, 10),
@@ -84,7 +75,6 @@ function buildCharts(sample) {
 
   });
 }
-
 
 function init() {
   // Grab a reference to the dropdown select element
