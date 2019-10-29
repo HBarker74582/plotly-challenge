@@ -1,30 +1,73 @@
 function buildMetadata(sample) {
-
-  // @TODO: Complete the following function that builds the metadata panel
-
   // Use `d3.json` to fetch the metadata for a sample
-    // Use d3 to select the panel with id of `#sample-metadata`
+  // Use d3 to select the panel with id of `#sample-metadata`
 
-    // Use `.html("") to clear any existing metadata
+  // Use `.html("") to clear any existing metadata
 
-    // Use `Object.entries` to add each key and value pair to the panel
-    // Hint: Inside the loop, you will need to use d3 to append new
-    // tags for each key-value in the metadata.
+  // Use `Object.entries` to add each key and value pair to the panel
+  // Hint: Inside the loop, you will need to use d3 to append new
+  // tags for each key-value in the metadata.
+  var metadata_url = `/metadata/${sample}`;
 
-    // BONUS: Build the Gauge Chart
-    // buildGauge(data.WFREQ);
+  d3.json(metadata_url).then(function (data) {
+    sampleMetadata = d3.select(`#sample-metadata`);
+    sampleMetadata.html("");
+    Object.entries(data).forEach(([key, value]) => {
+      sampleMetadata.append("p").text(`${key}: ${value}`);
+    });
+  });
+
+
+
+  // BONUS: Build the Gauge Chart
+  buildGauge(data.WFREQ);
 }
 
 function buildCharts(sample) {
 
-  // @TODO: Use `d3.json` to fetch the sample data for the plots
+  d3.json(`/samples/${sample}`).then(function (data) {
+    console.log(data.otu_labels);
+    var sampleValues = data.sample_values;
+    var otuID = data.otu_ids;
+    var otuLabels = data.otu_labels;
+
+    var bubbleTrace = [{
+      x: otuID,
+      y: sampleValues,
+      mode: "markers",
+      text: otuLabels,
+      marker: {
+        size: sampleValues
+      }
+    }];
+
+    var traceBubble = bubbleTrace;
+    Plotly.plot("bubble", traceBubble);
+
+    // @TODO: Use `d3.json` to fetch the sample data for the plots
 
     // @TODO: Build a Bubble Chart using the sample data
 
     // @TODO: Build a Pie Chart
     // HINT: You will need to use slice() to grab the top 10 sample_values,
     // otu_ids, and labels (10 each).
+    var pieChart = [{
+      values: sampleValues.slice(0, 10),
+      labels: otuID.slice(0, 10),
+      type: "pie"
+    }];
+
+    var layout = {
+      height: 600,
+      width: 800
+    };
+
+    var tracePie = pieChart;
+    Plotly.plot("pie", tracePie, layout);
+
+  });
 }
+
 
 function init() {
   // Grab a reference to the dropdown select element
